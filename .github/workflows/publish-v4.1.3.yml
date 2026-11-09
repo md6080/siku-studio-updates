@@ -1,0 +1,47 @@
+name: Publish verified SIKU STUDIO 4.1.3 installer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'artifacts/4.1.3/**'
+      - '.github/workflows/publish-v4.1.3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout distribution repository
+        uses: actions/checkout@v4
+      - name: Reassemble and verify installer
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64,hashlib,pathlib
+          folder=pathlib.Path("artifacts/4.1.3")
+          chunks=sorted(folder.glob("part-*.b64"))
+          if len(chunks)!=27: raise SystemExit(f"Expected 27 chunks, got {len(chunks)}")
+          payload=base64.b64decode("".join(p.read_text() for p in chunks),validate=True)
+          actual=hashlib.sha256(payload).hexdigest()
+          expected="d3ffddf296f81d711631f88202c25deb993761e1ff33f4172e739643b2ac6364"
+          if actual!=expected:raise SystemExit(f"SHA-256 mismatch: {actual}")
+          output=pathlib.Path("SIKU_STUDIO_FOUNDATION_V4.1.3_AUTO_UPDATE_SETUP.exe")
+          output.write_bytes(payload)
+          print("Validated",actual,len(payload))
+          PY
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          tag="v4.1.3"
+          file="SIKU_STUDIO_FOUNDATION_V4.1.3_AUTO_UPDATE_SETUP.exe"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "$file" --clobber
+          else
+            gh release create "$tag" "$file" --title "SIKU STUDIO Foundation v4.1.3 — automatic update checks" --notes "New: silent signed update check when the desktop app starts. MP4 and local test quota remain unchanged. Update installation remains opt-in."
+          fi
