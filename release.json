@@ -1,0 +1,9 @@
+{
+  "version": "4.1.2",
+  "channel": "stable",
+  "installer_url": "https://github.com/md6080/siku-studio-updates/releases/download/v4.1.2/SIKU_STUDIO_FOUNDATION_V4.1.2_GITHUB_UPDATE_SETUP.exe",
+  "sha256": "e8ab7f8d61da22b028696edfbf0a7749593240a9b4c2f8f883d2559ae86599a7",
+  "size": 10014720,
+  "release_notes": "First signed GitHub in-app update pilot for SIKU STUDIO Foundation. Preserves 3-export trial.",
+  "signature": "wBT3RyJWwI4LXYGdWiiLAkHnUad1ExTPDcXtYhLULYM4eZERGLdfN7b9dkhkVt91yhyIGFk9tcW4xGS9Al+TAA=="
+}
