@@ -1,9 +1,9 @@
 {
-  "version": "4.1.2",
+  "version": "4.1.3",
   "channel": "stable",
-  "installer_url": "https://github.com/md6080/siku-studio-updates/releases/download/v4.1.2/SIKU_STUDIO_FOUNDATION_V4.1.2_GITHUB_UPDATE_SETUP.exe",
-  "sha256": "e8ab7f8d61da22b028696edfbf0a7749593240a9b4c2f8f883d2559ae86599a7",
-  "size": 10014720,
-  "release_notes": "First signed GitHub in-app update pilot for SIKU STUDIO Foundation. Preserves 3-export trial.",
-  "signature": "wBT3RyJWwI4LXYGdWiiLAkHnUad1ExTPDcXtYhLULYM4eZERGLdfN7b9dkhkVt91yhyIGFk9tcW4xGS9Al+TAA=="
+  "installer_url": "https://github.com/md6080/siku-studio-updates/releases/download/v4.1.3/SIKU_STUDIO_FOUNDATION_V4.1.3_AUTO_UPDATE_SETUP.exe",
+  "sha256": "d3ffddf296f81d711631f88202c25deb993761e1ff33f4172e739643b2ac6364",
+  "size": 10016768,
+  "release_notes": "Automatic startup update checks, silent when current or offline. Signed updates only; install remains opt-in. Trial quota and MP4 engine unchanged.",
+  "signature": "rZ2SEH6JePHGVqpUoJvI3h2d4m9IPOhVC4zCwMnYmLWHzGUnIY9UOF7TuaiSBeQWoeCuCOagLoDmW6az1EQYCQ=="
 }
