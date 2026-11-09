@@ -1,0 +1,47 @@
+name: Publish verified SIKU STUDIO 4.1.2 installer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'artifacts/4.1.2/**'
+      - '.github/workflows/publish-v4.1.2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout public distribution repository
+        uses: actions/checkout@v4
+      - name: Reassemble and verify original installer
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64,hashlib,pathlib
+          folder=pathlib.Path("artifacts/4.1.2")
+          chunks=sorted(folder.glob("part-*.b64"))
+          if len(chunks)!=27: raise SystemExit(f"Expected 27 chunks, got {len(chunks)}")
+          data=base64.b64decode("".join(c.read_text() for c in chunks),validate=True)
+          actual=hashlib.sha256(data).hexdigest()
+          expected="e8ab7f8d61da22b028696edfbf0a7749593240a9b4c2f8f883d2559ae86599a7"
+          if actual!=expected: raise SystemExit(f"SHA-256 mismatch: {actual}")
+          output=pathlib.Path("SIKU_STUDIO_FOUNDATION_V4.1.2_GITHUB_UPDATE_SETUP.exe")
+          output.write_bytes(data)
+          print("Installer verified:",actual,"bytes:",len(data))
+          PY
+      - name: Publish installer as v4.1.2 GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          tag="v4.1.2"
+          file="SIKU_STUDIO_FOUNDATION_V4.1.2_GITHUB_UPDATE_SETUP.exe"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "$file" --clobber
+          else
+            gh release create "$tag" "$file" --title "SIKU STUDIO Foundation v4.1.2 (test update)" --notes "Signed test update for Windows 64-bit. Local email trial, up to 3 MP4 exports of at most 30 seconds. Do not use as a commercial licensing system."
+          fi
